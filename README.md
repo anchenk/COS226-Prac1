@@ -21,4 +21,4 @@ Key takeaways:
 
 - Lock one will be completed by Chloe 
 - Lock two will be completed by Anchen 
-- Lock three will be completed by Caleb
+- Peterson's lock will be completed by Caleb
