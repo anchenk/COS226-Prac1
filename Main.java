@@ -1,22 +1,46 @@
 import locks.Lock;
 import locks.PetersonLock;
+import locks.LockOne;
 
 public class Main {
-
-    private static int criticalSection = 0;
-
-    private static Lock createLock(boolean lockId) {
-        // set the type of lock being used here
-        return new PetersonLock(lockId);
+    private enum LockType {
+        LockOne,
+        LockTwo,
+        PetersonLock
     }
 
-    private static void startThread(boolean lockId) {
-        new Thread(() -> {
-            Lock lock = createLock(lockId);
+    private static int criticalSection = 0;
+    private static LockType type;
 
-            while (true) {
+    private static Lock createLock(boolean lockId, String lockType) {
+        lockType = lockType.toUpperCase();
+
+        switch (lockType) {
+            case "ONE":
+                type = LockType.LockOne;
+                return new LockOne(lockId);                
+            case "TWO":
+                type = LockType.LockTwo;
+                return new LockOne(lockId);//will be two when two is coded
+            case "PETERSON":
+                type = LockType.PetersonLock;
+                return new PetersonLock(lockId);                
+            default:
+                return null;                
+        }        
+    }
+
+    private static void startThread(boolean lockId, String lockType) {
+        Thread thread = new Thread(() -> {
+            Lock lock = createLock(lockId, lockType);
+            if(lock == null){
+                System.err.println("ERROR: Invalid lock type: " + lockType);
+                return;
+            }
+            criticalSection = 0;
+            while (criticalSection < 25) {
                 try {
-                    Thread.sleep(1000 + ((int) Math.random() * 2000)); // 1 to 3 seconds
+                    Thread.sleep(1000 + (int)(Math.random() * 2000)); // 1 to 3 seconds
                 } catch (InterruptedException e) {
                     // empty
                 }
@@ -24,15 +48,25 @@ public class Main {
                 lock.lock();
 
                 // access critical section
-                criticalSection++;
-
+                ++criticalSection;
+                System.out.println("Using " + type + " Thread " + (lockId ? "1" : "0") + " - Critical Section Count: " + criticalSection);                
                 lock.unlock();
             }
         });
+        thread.start();
     }
 
-    public static void main(String[] args) {
-        startThread(false);
-        startThread(true);
+    public static void main(String[] args) {        
+        //Peterson
+        // startThread(false, "Peterson");
+        // startThread(true, "Peterson");
+        
+        //Lock One
+        // startThread(true, "one");
+        // startThread(false, "one");
+
+        //Lock Two
+        // startThread(true, "two");
+        // startThread(false, "two");
     }
 }
