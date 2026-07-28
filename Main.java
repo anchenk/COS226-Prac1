@@ -1,6 +1,7 @@
 import locks.Lock;
-import locks.PetersonLock;
 import locks.LockOne;
+import locks.LockTwo;
+import locks.PetersonLock;
 
 public class Main {
     private enum LockType {
@@ -13,11 +14,11 @@ public class Main {
     private static final LockType LOCK_TYPE = LockType.LOCK_ONE;
 
     private static int criticalSection = 0;
-
+  
     private static Lock createLock(boolean lockId) {
         return switch (LOCK_TYPE) {
             case LOCK_ONE -> new LockOne(lockId);
-            case LOCK_TWO -> throw new Error("Unimplemented");
+          case LOCK_TWO -> new :LockTwo(lockId);
             case PETERSON -> new PetersonLock(lockId);
         };
     }
