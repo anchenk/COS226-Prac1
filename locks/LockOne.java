@@ -1,7 +1,8 @@
 package locks;
 
 public class LockOne extends Lock {
-    private static final boolean[] flag = new boolean[2];    
+    
+    private static final boolean[] flag = new boolean[2];
 
     private final int lockIndex;
     private final int otherLockIndex;
@@ -13,15 +14,15 @@ public class LockOne extends Lock {
     }
 
     @Override
-    public void lock(){
+    public void lock() {
         flag[lockIndex] = true;
-        while(flag[otherLockIndex]){
-            //wait
+        while (flag[otherLockIndex]) {
+            // wait
         }
     }
 
     @Override
-    public void unlock(){
-        flag[lockIndex] = false;    
+    public void unlock() {
+        flag[lockIndex] = false;
     }
 }
