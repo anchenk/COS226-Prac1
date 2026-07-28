@@ -1,6 +1,7 @@
 import locks.Lock;
-import locks.PetersonLock;
 import locks.LockOne;
+import locks.LockTwo;
+import locks.PetersonLock;
 
 public class Main {
     private enum LockType {
@@ -21,7 +22,7 @@ public class Main {
                 return new LockOne(lockId);                
             case "TWO":
                 type = LockType.LockTwo;
-                return new LockOne(lockId);//will be two when two is coded
+                return new LockTwo(lockId);//will be two when two is coded
             case "PETERSON":
                 type = LockType.PetersonLock;
                 return new PetersonLock(lockId);                
