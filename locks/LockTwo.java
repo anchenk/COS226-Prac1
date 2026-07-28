@@ -2,7 +2,7 @@ package locks;
 
 public class LockTwo extends Lock {
 
-    private static boolean turn = false;
+    private static volatile boolean turn = false;
 
 
     public LockTwo(boolean lockId) {
