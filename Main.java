@@ -11,14 +11,14 @@ public class Main {
     }
 
     // set lock type here
-    private static final LockType LOCK_TYPE = LockType.LOCK_ONE;
+    private static final LockType LOCK_TYPE = LockType.PETERSON;
 
     private static int criticalSection = 0;
   
     private static Lock createLock(boolean lockId) {
         return switch (LOCK_TYPE) {
             case LOCK_ONE -> new LockOne(lockId);
-          case LOCK_TWO -> new :LockTwo(lockId);
+            case LOCK_TWO -> new LockTwo(lockId);
             case PETERSON -> new PetersonLock(lockId);
         };
     }
@@ -38,7 +38,7 @@ public class Main {
 
                 System.out.println(
                         "Thread ID: " + Thread.currentThread().threadId()
-                                + ". Incremeneting critical section, current value: " + criticalSection);
+                                + ". Incrementing critical section, current value: " + criticalSection);
 
                 // access critical section
                 criticalSection++;
