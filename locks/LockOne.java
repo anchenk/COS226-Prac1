@@ -5,10 +5,11 @@
 */
 
 package locks;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public class LockOne extends Lock {
     
-    private static final boolean[] flag = new boolean[2];
+    private static final AtomicIntegerArray flag = new AtomicIntegerArray(2);
 
     private final int lockIndex;
     private final int otherLockIndex;
@@ -21,14 +22,14 @@ public class LockOne extends Lock {
 
     @Override
     public void lock() {
-        flag[lockIndex] = true;
-        while (flag[otherLockIndex]) {
+        flag.set(lockIndex, 1);
+        while (flag.get(otherLockIndex) == 1) {
             // wait
         }
     }
 
     @Override
     public void unlock() {
-        flag[lockIndex] = false;
+        flag.set(lockIndex, 0);
     }
 }

@@ -1,9 +1,9 @@
 # Practical 1
 
-To develop an understanding of mutual exclution algorithms by implementing locking algorithms, demonstrating their behaviour using two concurrent threads and explaining the concepts behind each algorithm. 
+To develop an understanding of mutual exclusion algorithms by implementing locking algorithms, demonstrating their behaviour using two concurrent threads and explaining the concepts behind each algorithm. 
 
 Key takeaways: 
-- The purpose of mutual exclution
+- The purpose of mutual exclusion
 - Implement software locking algorithms 
 - Demonstrate behaviour of concurrent threads 
 - Explain why certain algorithms fail 
@@ -27,7 +27,16 @@ Key takeaways:
 
 ## Lock One
 
-TODO
+The flag variable was implemented using an `AtomicIntegerArray`, with `0` representing `false` and `1` representing `true`. Using an atomic array was necessary to ensure that each index in the array is volatile, providing thread-safe, atomic access and updates.
+
+The logic behind LockOne is:
+- When a thread wants to enter the critical section, it sets it flag to `1` (`true`), indicating that the thread has interest in using the critical section.
+- If then enters a while loop, continuously checking if the other threads flag is not set to `1` (`true`)
+- If the other thead's flag is `0` (`false`), then the current thread processed to the critical section.
+- If the other thead's flag is `1` (`true`), then the current thread waits indefinitely until the the other thread has released its flag. 
+
+Why LockOne fails:
+- Both threads can raise their flags to `1` (`true`) simultaneously, this can cause deadlock as thread A will acknowledge B's flag and thread B will acknowledge A's flag leading both threads to wait for the others flag to be set to `0` (`false`) leading to deadlock and starvation as neither will release their flags until the other releases theirs. 
 
 ## Lock Two
 
