@@ -1,9 +1,17 @@
 package locks;
 
+import java.util.concurrent.atomic.AtomicIntegerArray;
+
 public class PetersonLock extends Lock {
 
-    private static final boolean[] flag = new boolean[2];
-    private static boolean turn = false;
+    /*
+     * Using AtomicIntegerArray so that each index acts like a volatile boolean
+     * variable.
+     * A regular boolean array does not have volatile indexes.
+     * 0: false, 1: true
+     */
+    private static final AtomicIntegerArray flag = new AtomicIntegerArray(2);
+    private static volatile boolean turn = false; // volatile prevents each thread from caching its value
 
     private final int lockIndex;
     private final int otherLockIndex;
@@ -16,15 +24,15 @@ public class PetersonLock extends Lock {
 
     @Override
     public void lock() {
-        flag[lockIndex] = true;
+        flag.set(lockIndex, 1);
         turn = !lockId;
 
-        while (turn != lockId && flag[otherLockIndex]) {
+        while (turn != lockId && flag.get(otherLockIndex) == 1) {
             // wait
         }
     }
 
     public void unlock() {
-        flag[lockIndex] = false;
+        flag.set(lockIndex, 0);
     }
 }

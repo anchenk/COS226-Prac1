@@ -14,7 +14,7 @@ public class Main {
     private static final LockType LOCK_TYPE = LockType.PETERSON;
 
     private static int criticalSection = 0;
-  
+
     private static Lock createLock(boolean lockId) {
         return switch (LOCK_TYPE) {
             case LOCK_ONE -> new LockOne(lockId);
@@ -27,32 +27,41 @@ public class Main {
         Thread thread = new Thread(() -> {
             Lock lock = createLock(lockId);
 
-            while (criticalSection < 25) {
+            for (int i = 0; i < 20; i++) { // run 20 times
                 try {
-                    Thread.sleep(1000 + (int) (Math.random() * 2000)); // wait 1 to 3 seconds
+                    Thread.sleep(1000); // wait 1 second
                 } catch (InterruptedException e) {
                     // empty
                 }
 
+                System.out.println("Thread ID: " + Thread.currentThread().threadId()
+                        + " | Locking");
                 lock.lock();
 
                 System.out.println(
                         "Thread ID: " + Thread.currentThread().threadId()
-                                + ". Incrementing critical section, current value: " + criticalSection);
+                                + " | Incrementing critical section, current value: " + criticalSection);
 
                 // access critical section
                 criticalSection++;
 
                 System.out.println(
-                        "Incremented critical section, new value: " + criticalSection);
+                        "Thread ID: " + Thread.currentThread().threadId()
+                                + " | Incremented critical section, new value: "
+                                + criticalSection + ". Unlocking.");
 
                 lock.unlock();
+                System.out.println("Thread ID: " + Thread.currentThread().threadId()
+                        + " | Unlocked");
             }
         });
+
         thread.start();
     }
 
     public static void main(String[] args) {
+        System.out.println("Starting threads...");
+
         startThread(false);
         startThread(true);
     }
