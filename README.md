@@ -40,7 +40,17 @@ Why LockOne fails:
 
 ## Lock Two
 
-TODO
+The flag variable was implemented with a volatile boolean called `turn`, the volatility was necessary to ensure that the updates made to the variable were immediately visible to the other threads. In doing so it ensures that a thread uses a cached value causing inaccurate results. 
+
+The logic is as follows: 
+
+- When a thread attempts to enter the critical section, it must first set the turn variable to the other thread's ID. This indicates that the other thread can `go next`
+- Then the current thread can enter the while loop which continuously checkes that the turn variable is not equal to its own ID
+- The thread will only proceed once the other thread calls the `lock()` function which will override the turn ID
+- The `unlock()` function is intentionally left empty as there is nothing released when the function is called, it can only be indirectly unlocked when another thread calls `lock()`
+
+Lock Two fails because: 
+- Deadlock will occur when a single thread tries to repeatedly enter the critical section. Seeing as no other thread calls `lock()` which will set the turn ID back to the single thread's ID the thread will wait forever, which also causes starvation.
 
 ## Peterson Lock
 
